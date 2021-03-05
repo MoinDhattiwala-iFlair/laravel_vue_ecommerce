@@ -1,63 +1,106 @@
 <template>
-  <div class="m-grid m-grid--hor m-grid--root m-page">
-    <div
-      class="m-grid__item m-grid__item--fluid m-grid m-grid--hor m-login m-login--signin m-login--2 m-login-2--skin-1"
-      id="m_login"
-      style="background-image: url(images/bg/bg.jpg)"
-    >
-      <div class="m-grid__item m-grid__item--fluid m-login__wrapper">
-        <div class="m-login__container">
-          <div class="m-login__logo">
-            <a href="#">
-              <img src="images/logos/logo.png" />
-            </a>
+  <div class="">
+    <div class="m-grid m-grid--hor m-grid--root m-page">
+      <!-- BEGIN: Header -->
+
+      <app-header></app-header>
+
+      <!-- END: Header -->
+
+      <!-- begin::Body -->
+      <div
+        class="m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body"
+      >
+        <!-- BEGIN: Left Aside -->
+        <button
+          class="m-aside-left-close m-aside-left-close--skin-dark"
+          id="m_aside_left_close_btn"
+        >
+          <i class="la la-close"></i>
+        </button>
+        <div id="m_aside_left" class="m-grid__item m-aside-left m-aside-left--skin-dark">
+          <!-- BEGIN: Aside Menu -->
+          <div
+            id="m_ver_menu"
+            class="m-aside-menu m-aside-menu--skin-dark m-aside-menu--submenu-skin-dark m-scroller ps ps--active-y"
+            m-menu-vertical="1"
+            m-menu-scrollable="1"
+            m-menu-dropdown-timeout="500"
+            style="position: relative; height: 189px; overflow: hidden"
+          >
+            <ul class="m-menu__nav m-menu__nav--dropdown-submenu-arrow">
+              <li class="m-menu__item m-menu__item--active" aria-haspopup="true">
+                <router-link to="/dashboard" class="m-menu__link">
+                  <i class="m-menu__link-icon flaticon-line-graph"></i>
+                  <span class="m-menu__link-title">
+                    <span class="m-menu__link-wrap">
+                      <span class="m-menu__link-text">Dashboard</span>
+                    </span>
+                  </span>
+                </router-link>
+              </li>
+              <li class="m-menu__item" aria-haspopup="true">
+                <router-link to="/users" class="m-menu__link">
+                  <i class="m-menu__link-icon flaticon-users"></i>
+                  <span class="m-menu__link-title">
+                    <span class="m-menu__link-wrap">
+                      <span class="m-menu__link-text">Users</span>
+                    </span>
+                  </span>
+                </router-link>
+              </li>
+            </ul>
+
+            <div class="ps__rail-x" style="left: 0px; bottom: 0px">
+              <div class="ps__thumb-x" tabindex="0" style="left: 0px; width: 0px"></div>
+            </div>
+            <div class="ps__rail-y" style="top: 0px; height: 189px; right: 4px">
+              <div class="ps__thumb-y" tabindex="0" style="top: 0px; height: 40px"></div>
+            </div>
           </div>
-          <!-- Login start -->
-          <login></login>
-          <!-- Login end -->
 
-          <!-- Sign up start -->
-          <register></register>
-          <!-- Sign up end -->
+          <!-- END: Aside Menu -->
+        </div>
 
-          <!-- Forget Password start -->
-          <forget-password></forget-password>
-          <!-- Forget Password end -->
+        <!-- END: Left Aside -->
 
-          <div class="m-login__account">
-            <span class="m-login__account-msg"> Don't have an account yet ? </span
-            >&nbsp;&nbsp;
-            <a
-              href="javascript:void(0)"
-              id="m_login_signup"
-              class="m-link m-link--light m-login__account-link"
-              >Sign Up</a
-            >
-          </div>
+        <div class="m-grid__item m-grid__item--fluid m-wrapper">
+          <router-view></router-view>
         </div>
       </div>
+      <!-- end:: Body -->
+
+      <!-- begin::Footer -->
+
+      <app-footer></app-footer>
+
+      <!-- end::Footer -->
     </div>
   </div>
 </template>
+
 <script>
-import ForgetPassword from "./ForgetPassword.vue";
-import Login from "./Login.vue";
-import Register from "./Register.vue";
+import AppFooter from "./AppFooter.vue";
+import AppHeader from "./AppHeader.vue";
 export default {
-  components: { ForgetPassword, Register, Login },
+  components: { AppHeader, AppFooter },
+  computed: {
+    authUser() {
+      let authUser = this.$store.getters["authUser/authUser"];
+      return authUser;
+    },
+  },
   created() {
-    let authUser = this.$store.getters['authUser/authUser'];
-    if (authUser != null) {
-      this.$router.push('/dashboard')
+    if (this.authUser == null) {
+      this.$router.push("/");
     }
+  },
+  methods: {},
+  mounted() {
+    const plugin = document.createElement("script");
+    plugin.setAttribute("src", "js/dashboard.js");
+    plugin.async = true;
+    document.head.appendChild(plugin);
   },
 };
 </script>
-<style scoped>
-/* .m-login__signin {
-  display: none !important;
-}
-.m-login__signup {
-  display: block !important;
-} */
-</style>

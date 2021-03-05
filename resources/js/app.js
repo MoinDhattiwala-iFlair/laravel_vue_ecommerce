@@ -12,7 +12,10 @@ import Toasted from 'vue-toasted';
 
 Vue.use(Vuelidate)
 
-Vue.use(Toasted)
+Vue.use(Toasted, {
+    duration: 800,
+    keepOnHover: true
+});
 
 Vue.config.productionTip = false
 

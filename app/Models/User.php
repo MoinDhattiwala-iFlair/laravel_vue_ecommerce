@@ -20,6 +20,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'photo'
     ];
 
     /**
@@ -40,4 +41,15 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    protected $appends = ['avatar'];
+
+    public function getAvatarAttribute()
+    {
+        if ($this->photo == "") {
+            return "https://ui-avatars.com/api/?background=random&rounded=true&size=75&name=" . $this->name;
+        }
+        return asset('images/users/' . $this->photo);
+    }
+    
 }

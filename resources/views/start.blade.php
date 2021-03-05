@@ -10,8 +10,9 @@ $config = [
 <html lang="{{ app()->getLocale() }}">
 
     <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta charset="utf-8">        
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no">
+
 
         <title>{{ config('app.name') }}</title>
 
@@ -20,7 +21,7 @@ $config = [
         <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     </head>
 
-    <body>
+    <body class="m-page--fluid m--skin- m-content--skin-light2 m-header--fixed m-header--fixed-mobile m-aside-left--enabled m-aside-left--skin-dark m-aside-left--fixed m-aside-left--offcanvas m-footer--push m-aside--offcanvas-default" >
         <div id="root">
             <app></app>
         </div>
@@ -34,7 +35,6 @@ $config = [
         <script src="{{ asset('js/vendors.bundle.js') }}"></script>
         <script src="{{ asset('js/scripts.bundle.js') }}"></script>
         <script src="{{ asset('js/app.js') }}"></script>
-        <script src="{{ asset('js/login.js') }}"></script>
     </body>
 
 </html>

@@ -118,8 +118,8 @@ export default {
           .dispatch("authUser/loginUser", this.user)
           .then((result) => {
             this.$toasted.success("Welcome " + result.data.user.name).goAway(1000);
-            setTimeout(() => {              
-              this.$router.push('/dashboard')
+            setTimeout(() => {
+              this.$router.push("/dashboard");
             }, 1000);
           })
           .catch((err) => {

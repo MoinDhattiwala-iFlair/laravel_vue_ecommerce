@@ -17,5 +17,5 @@ mix.js('resources/js/app.js', 'public/js')
         require('autoprefixer'),
     ])
     .vue()
-    //.browserSync('localhost')
+    .browserSync('vp1.test')
     .disableNotifications();

@@ -15,7 +15,6 @@
         />
         <div class="text-danger" v-if="!$v.user.name.required">Field is required</div>
         <div class="text-danger" v-else-if="!$v.user.name.minLength">
-          
           Name must have at least
           {{ $v.user.name.$params.minLength.min }}
           letters.
@@ -68,7 +67,10 @@
         <div class="text-danger" v-if="!$v.user.password_confirmation.required">
           Field is required
         </div>
-        <div class="text-danger" v-else-if="!$v.user.password_confirmation.sameAsPassword">
+        <div
+          class="text-danger"
+          v-else-if="!$v.user.password_confirmation.sameAsPassword"
+        >
           Confirm Passwords must be same as Password
         </div>
       </div>
@@ -148,7 +150,7 @@ export default {
           .then((result) => {
             this.$toasted.success("Welcome " + result.data.user.name).goAway(1000);
             setTimeout(() => {
-              this.$router.push('/dashboard')
+              this.$router.push("/dashboard");
             }, 1000);
           })
           .catch((err) => {
