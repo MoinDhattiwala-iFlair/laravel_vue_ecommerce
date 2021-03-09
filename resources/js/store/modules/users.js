@@ -18,15 +18,35 @@ const actions = {
             });
         });
     },
-    store(context, user) {
+    store(context, data) {
         return new Promise((resolve, reject) => {
-            axios.post('/user/store', user).then((result) => {
+            axios.post('/user/store', data.formData).then((result) => {
                 resolve(result);
             }).catch((err) => {
                 reject(err.response);
             });
         });
-    }
+    },
+    find(context, id) {
+        return new Promise((resolve, reject) => {
+            axios.get('/user/' + id).then((result) => {
+                console.log('f result', result);
+                resolve(result);
+            }).catch((err) => {
+                console.log('f err', err.response);
+                reject(err.response);
+            });
+        });
+    },
+    update(context, data) {        
+        return new Promise((resolve, reject) => {
+            axios.post('/user/' + data.id + '/update', data.formData).then((result) => {
+                resolve(result);
+            }).catch((err) => {
+                reject(err.response);
+            });
+        });
+    },
 };
 const mutations = {
     setUsers(state, users) {

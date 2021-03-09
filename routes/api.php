@@ -25,5 +25,7 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers\Api'], func
     Route::middleware('auth:sanctum')->group(function () {
         Route::get('users', 'ApiController@users');
         Route::post('user/store', 'ApiController@storeUser');
+        Route::get('user/{user}', 'ApiController@findUser');
+        Route::post('user/{user}/update', 'ApiController@updateUser');
     });
 });

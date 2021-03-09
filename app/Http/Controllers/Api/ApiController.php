@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Validator;
 
 class ApiController extends Controller
@@ -56,7 +57,7 @@ class ApiController extends Controller
 
     public function users()
     {
-        $users = User::get();
+        $users = User::latest()->get();
         return response()->json(['users' => $users], 200);
     }
 
@@ -66,15 +67,71 @@ class ApiController extends Controller
             'name' => 'required|string|min:3',
             'email' => 'required|string|email|unique:users',
             'password' => 'required|string|min:8|confirmed',
+            'photo' => 'nullable|image|mimes:jpg,jpeg,png|max:1024'
         ]);
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
         $inputs = $validator->validated();
         $inputs['password'] = \Hash::make($inputs['password']);
+
+        if ($request->has('photo')) {
+            $inputs['photo'] = $this->uploadImage('images/users', $request->photo, [75, 75]);
+        }
+
         if (User::create($inputs)) {
             return response()->json(['msg' => 'User saved successfully.'], 200);
         }
         return response()->json(['msg' => 'Failed to save user please try again.'], 500);
+    }
+
+    public function findUser(User $user)
+    {
+        return response()->json($user, 200);
+    }
+
+    public function updateUser(Request $request, User $user)
+    {        
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|min:3',
+            'email' => 'required|string|email|unique:users,email,'.$user->id,
+            'password' => 'sometimes|string|min:8|confirmed',
+            'photo' => 'nullable|image|mimes:jpg,jpeg,png|max:1024'
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+        $inputs = $validator->validated();
+        if ($request->has('password') && $request->password != "") {
+            $inputs['password'] = \Hash::make($inputs['password']);
+        }        
+        if ($request->has('photo')) {
+            $inputs['photo'] = $this->uploadImage('images/users', $request->photo, [75,75], $user->photo);
+        }            
+        if ($user->update($inputs)) {
+            return response()->json(['message' => 'User updated successfully.'], 200);
+        }        
+        return response()->json(['message' => 'Failed to update user please try again.'], 500);
+    }
+
+    private function uploadImage($destination, $photo, $ratio = [], $old_photo = null)
+    {
+        $destinationPath =  public_path($destination);
+        if (!file_exists($destinationPath)) {
+            @mkdir($destinationPath, 0777, true);
+        }
+
+        if (!is_null($old_photo) && file_exists($old_photo)) {
+            unlink($old_photo);
+        }
+
+        $img = Image::make($photo->getRealPath());
+        if (!empty($ratio)) {
+            $img->resize($ratio[0], $ratio[1], function ($constraint) {
+                $constraint->aspectRatio();
+            });
+        }        
+        $img->save($destinationPath . '/' . uniqid(time()) . '.' . $photo->getClientOriginalExtension());
+        return $destination.'/'. $img->basename;
     }
 }

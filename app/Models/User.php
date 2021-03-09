@@ -49,7 +49,7 @@ class User extends Authenticatable
         if ($this->photo == "") {
             return "https://ui-avatars.com/api/?background=random&rounded=true&size=75&name=" . $this->name;
         }
-        return asset('images/users/' . $this->photo);
+        return asset($this->photo);
     }
     
 }
