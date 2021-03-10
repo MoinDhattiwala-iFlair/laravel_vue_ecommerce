@@ -1,56 +1,54 @@
 import axios from "../../plugins/axios";
 const state = {
-    users: {}
+    categories: {}
 };
 const getters = {
     all(state, getters) {
-        return state.users;
+        return state.categories;
     }
 };
 const actions = {
-    getUsers(context) {
+    get(context) {
         return new Promise((resolve, reject) => {
-            axios.get('/users').then((result) => {
-                context.commit('setUsers', result.data.users);
-                resolve(result);
+            axios.get('/category').then((result) => {
+                context.commit('set', result.data.categories)
+                resolve();
             }).catch((err) => {
                 reject(err.response);
             });
         });
     },
-    store(context, data) {
+    find(context, slug) {
         return new Promise((resolve, reject) => {
-            axios.post('/user/store', data.formData).then((result) => {
-                resolve(result);
+            axios.get('/category/' + slug).then((result) => {
+                resolve(result.data.category);
             }).catch((err) => {
                 reject(err.response);
             });
         });
     },
-    find(context, id) {
+    store(context, category) {
         return new Promise((resolve, reject) => {
-            axios.get('/user/' + id).then((result) => {
-                console.log('f result', result);
-                resolve(result);
-            }).catch((err) => {
-                console.log('f err', err.response);
-                reject(err.response);
-            });
-        });
-    },
-    update(context, data) {        
-        return new Promise((resolve, reject) => {
-            axios.post('/user/' + data.id + '/update', data.formData).then((result) => {
-                resolve(result);
+            axios.post('/category', category).then((result) => {
+                resolve(result.data);
             }).catch((err) => {
                 reject(err.response);
             });
         });
     },
-    delete(context, user) {
+    update(context, category) {
         return new Promise((resolve, reject) => {
-            axios.delete('/user/' + user.id).then((result) => {
-                context.commit('remove', user.index);
+            axios.post('/category/' + category.slug, category).then((result) => {
+                resolve(result.data);
+            }).catch((err) => {
+                reject(err.response);
+            });
+        });
+    },
+    delete(context, category) {
+        return new Promise((resolve, reject) => {
+            axios.delete('/category/' + category.slug).then((result) => {
+                context.commit('remove', category.index);
                 resolve(result.data);
             }).catch((err) => {
                 reject(err.response);
@@ -59,11 +57,11 @@ const actions = {
     },
 };
 const mutations = {
-    setUsers(state, users) {
-        state.users = users;
+    set(state, categories) {
+        state.categories = categories;
     },
     remove(state, index) {
-        state.users.splice(index, 1);
+        state.categories.splice(index, 1);
     }
 };
 

@@ -3,7 +3,7 @@
     <div class="m-subheader">
       <div class="d-flex align-items-center">
         <div class="mr-auto">
-          <h3 class="m-subheader__title m-subheader__title--separator">Users</h3>
+          <h3 class="m-subheader__title m-subheader__title--separator">Sub Category</h3>
           <ul class="m-subheader__breadcrumbs m-nav m-nav--inline">
             <li class="m-nav__item m-nav__item--home">
               <router-link to="dashboard" class="m-nav__link m-nav__link--icon">
@@ -12,16 +12,16 @@
             </li>
             <li class="m-nav__separator">-</li>
             <li class="m-nav__item">
-              <router-link to="users" class="m-nav__link">
-                <span class="m-nav__link-text">Users</span>
-              </router-link>
+              <span class="m-nav__link">
+                <span class="m-nav__link-text">Sub Category</span>
+              </span>
             </li>
           </ul>
         </div>
         <div>
           <div m-dropdown-toggle="hover" aria-expanded="true" hover="1" timeout="39">
             <router-link
-              to="/user/add"
+              to="/subcategory/add"
               class="m-portlet__nav-link btn btn-lg btn-secondary m-btn m-btn--outline-2x m-btn--air m-btn--icon m-btn--icon-only m-btn--pill m-dropdown__toggle"
             >
               <i class="la la-plus"></i>
@@ -44,28 +44,36 @@
                     <thead>
                       <tr class="text-center">
                         <th>#</th>
-                        <th>Photo</th>
                         <th>Name</th>
-                        <th>Email</th>
+                        <th>Slug</th>
+                        <th>Category</th>
+                        <th>Status</th>
                         <th colspan="2">Action</th>
                       </tr>
                     </thead>
                     <tbody>
-                      <tr v-for="(user, index) in users" :key="user.id">
+                      <tr
+                        v-for="(subcategory, index) in subcategories"
+                        :key="subcategory.slug"
+                      >
                         <th class="text-center" scope="row">{{ index + 1 }}</th>
+                        <td>{{ subcategory.name }}</td>
+                        <td>{{ subcategory.slug }}</td>
+                        <td>{{ subcategory.category_name }}</td>
                         <td class="text-center">
-                          <img
-                            :src="user.avatar"
-                            class="img-responsive"
-                            alt="user.name"
-                            style="width: 40%"
-                          />
+                          <span
+                            class="m-badge m-badge--wide"
+                            :class="
+                              'm-badge--' +
+                              (subcategory.status == 'Active' ? 'success' : 'danger')
+                            "
+                          >
+                            {{ subcategory.status }}
+                          </span>
                         </td>
-                        <td>{{ user.name }}</td>
-                        <td>{{ user.email }}</td>
                         <td class="text-center">
                           <router-link
-                            :to="'/user/add/' + user.id"
+                            :to="'/category/' + subcategory.slug"
                             class="btn m-btn--pill btn-outline-warning m-btn m-btn--custom m-btn--icon m-btn--icon-only"
                             ><i class="la la-pencil"></i
                           ></router-link>
@@ -73,8 +81,7 @@
                         <td class="text-center">
                           <button
                             class="btn m-btn--pill btn-outline-danger m-btn m-btn--custom m-btn--icon m-btn--icon-only"
-                            :disabled="authUser.id == user.id"
-                            @click="deleteUser(index)"
+                            @click="deleteSubCat(index)"
                           >
                             <i class="la la-trash"></i>
                           </button>
@@ -96,23 +103,20 @@
 </template>
 <script>
 export default {
-  name: "Users",
+  name: "SubCategory",
   computed: {
-    users() {
-      return this.$store.getters["users/all"];
-    },
-    authUser() {
-      return this.$store.getters["authUser/authUser"];
+    subcategories() {
+      return this.$store.getters["subcategory/all"];
     },
   },
   methods: {
-    async deleteUser(index) {
+    async deleteSubCat(index) {
       if (!confirm("Are you sure ?")) {
         return;
       }
-      let user = this.users[index];
+      let subcategory = this.subcategories[index];
       await this.$store
-        .dispatch("users/delete", { id: user.id, index: index })
+        .dispatch("subcategory/delete", { slug: subcategory.slug, index: index })
         .then((result) => {
           console.log("d result", result);
           this.$toasted.success(result.message);
@@ -123,7 +127,7 @@ export default {
     },
   },
   created() {
-    this.$store.dispatch("users/getUsers");
+    this.$store.dispatch("subcategory/get");
   },
 };
 </script>

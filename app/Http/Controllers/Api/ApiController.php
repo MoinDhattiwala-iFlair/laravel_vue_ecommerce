@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\User;
+use App\Models\Category;
+use App\Models\SubCategory;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Intervention\Image\Facades\Image;
@@ -91,10 +94,10 @@ class ApiController extends Controller
     }
 
     public function updateUser(Request $request, User $user)
-    {        
+    {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|min:3',
-            'email' => 'required|string|email|unique:users,email,'.$user->id,
+            'email' => 'required|string|email|unique:users,email,' . $user->id,
             'password' => 'sometimes|string|min:8|confirmed',
             'photo' => 'nullable|image|mimes:jpg,jpeg,png|max:1024'
         ]);
@@ -104,13 +107,13 @@ class ApiController extends Controller
         $inputs = $validator->validated();
         if ($request->has('password') && $request->password != "") {
             $inputs['password'] = \Hash::make($inputs['password']);
-        }        
+        }
         if ($request->has('photo')) {
-            $inputs['photo'] = $this->uploadImage('images/users', $request->photo, [75,75], $user->photo);
-        }            
+            $inputs['photo'] = $this->uploadImage('images/users', $request->photo, [75, 75], $user->photo);
+        }
         if ($user->update($inputs)) {
             return response()->json(['message' => 'User updated successfully.'], 200);
-        }        
+        }
         return response()->json(['message' => 'Failed to update user please try again.'], 500);
     }
 
@@ -130,8 +133,128 @@ class ApiController extends Controller
             $img->resize($ratio[0], $ratio[1], function ($constraint) {
                 $constraint->aspectRatio();
             });
-        }        
+        }
         $img->save($destinationPath . '/' . uniqid(time()) . '.' . $photo->getClientOriginalExtension());
-        return $destination.'/'. $img->basename;
+        return $destination . '/' . $img->basename;
     }
+
+    public function destroyUser(User $user)
+    {
+        if ($user->delete()) {
+            return response()->json(['message' => 'User deleted successfully.'], 200);
+        }
+        return response()->json(['message' => 'Failed to delete user please try again.'], 500);
+    }
+
+    //category start
+
+    public function getCategory()
+    {
+        return response()->json(['categories' => Category::latest()->get()], 200);
+    }
+
+    public function findCategory(Category $category)
+    {
+        return response()->json(['category' => $category], 200);
+    }
+
+    public function storeCategory(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|min:3|unique:categories',
+            'status' => ['required', Rule::in(['Active', 'Inactive'])]
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors(), 'message' => 'Please enter valid inputs'], 422);
+        }
+
+        if (Category::create($validator->validated())) {
+            return response()->json(['message' => 'Category saved successfully.'], 200);
+        }
+        return response()->json(['message' => 'Failed to save category please try again.'], 500);
+    }
+
+    public function updateCategory(Request $request, Category $category)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|min:3|unique:categories,name,' . $category->id,
+            'status' => ['required', Rule::in(['Active', 'Inactive'])]
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors(), 'message' => 'Please enter valid inputs'], 422);
+        }        
+        if ($category->update($validator->validated())) {
+            return response()->json(['message' => 'Category updated successfully.'], 200);
+        }
+        return response()->json(['message' => 'Failed to update category please try again.'], 500);
+    }
+
+    public function destroyCategory(Category $category)
+    {
+        if ($category->delete()) {
+            return response()->json(['message' => 'Category deleted successfully.'], 200);
+        }
+        return response()->json(['message' => 'Failed to delete category please try again.'], 500);
+    }
+
+    //category end
+
+    //subcategory start
+
+    public function getSubCategory()
+    {
+        return response()->json(['subcategories' => SubCategory::latest()->get()], 200);
+    }
+
+    public function findSubCategory(Category $category)
+    {
+        return response()->json(['subcategory' => $category], 200);
+    }
+
+    public function storeSubCategory(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'category_id' => 'required|numeric|exists:categories,id',
+            'name' => 'required|string|min:3|unique:sub_categories',
+            'status' => ['required', Rule::in(['Active', 'Inactive'])]
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors(), 'message' => 'Please enter valid inputs'], 422);
+        }
+
+        if (Category::create($validator->validated())) {
+            return response()->json(['message' => 'Sub Category saved successfully.'], 200);
+        }
+        return response()->json(['message' => 'Failed to save sub category please try again.'], 500);
+    }
+
+    public function updateSubCategory(Request $request, SubCategory $subcategory)
+    {
+        $validator = Validator::make($request->all(), [
+            'category_id' => 'required|numeric|exists:categories,id',
+            'name' => 'required|string|min:3|unique:sub_categories,name,' . $subcategory->id,
+            'status' => ['required', Rule::in(['Active', 'Inactive'])]
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors(), 'message' => 'Please enter valid inputs'], 422);
+        }
+        if ($subcategory->update($validator->validated())) {
+            return response()->json(['message' => 'Sub Category updated successfully.'], 200);
+        }
+        return response()->json(['message' => 'Failed to update sub category please try again.'], 500);
+    }
+
+    public function destroySubCategory(SubCategory $subcategory)
+    {
+        if ($subcategory->delete()) {
+            return response()->json(['message' => 'Sub Category deleted successfully.'], 200);
+        }
+        return response()->json(['message' => 'Failed to delete sub category please try again.'], 500);
+    }
+
+    //subcategory end
 }

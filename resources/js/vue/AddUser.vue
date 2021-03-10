@@ -336,6 +336,7 @@ export default {
         .then((result) => {
           console.log("c result", result);
           this.user = result.data;
+          this.user.photo = "";
           this.isSubmitted = false;
         })
         .catch((err) => {
