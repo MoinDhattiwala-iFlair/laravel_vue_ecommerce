@@ -66,6 +66,11 @@ export default new Router({
             component: AddSubCategory
         },
         {
+            path: '/subcategory/:slug',
+            name: 'AddSubCategory',
+            component: AddSubCategory
+        },
+        {
             path: "*",
             component: PageNotFound
         }

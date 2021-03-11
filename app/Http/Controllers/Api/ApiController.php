@@ -208,9 +208,9 @@ class ApiController extends Controller
         return response()->json(['subcategories' => SubCategory::latest()->get()], 200);
     }
 
-    public function findSubCategory(Category $category)
+    public function findSubCategory(SubCategory $subcategory)
     {
-        return response()->json(['subcategory' => $category], 200);
+        return response()->json(['subcategory' => $subcategory], 200);
     }
 
     public function storeSubCategory(Request $request)
@@ -225,7 +225,7 @@ class ApiController extends Controller
             return response()->json(['errors' => $validator->errors(), 'message' => 'Please enter valid inputs'], 422);
         }
 
-        if (Category::create($validator->validated())) {
+        if (SubCategory::create($validator->validated())) {
             return response()->json(['message' => 'Sub Category saved successfully.'], 200);
         }
         return response()->json(['message' => 'Failed to save sub category please try again.'], 500);

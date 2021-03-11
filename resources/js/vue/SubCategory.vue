@@ -73,7 +73,7 @@
                         </td>
                         <td class="text-center">
                           <router-link
-                            :to="'/category/' + subcategory.slug"
+                            :to="'/subcategory/' + subcategory.slug"
                             class="btn m-btn--pill btn-outline-warning m-btn m-btn--custom m-btn--icon m-btn--icon-only"
                             ><i class="la la-pencil"></i
                           ></router-link>

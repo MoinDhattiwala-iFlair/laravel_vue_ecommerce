@@ -90,6 +90,58 @@
                 <div
                   class="form-group m-form__group row"
                   :class="{
+                    'has-danger':
+                      this.$v.subcategory.category_id.$invalid || this.errors.category_id,
+                  }"
+                >
+                  <label for="select-category_id" class="col-2 col-form-label">
+                    Category
+                  </label>
+                  <div class="col-10">
+                    <select
+                      class="form-control m-input"
+                      id="exampleSelect1"
+                      v-model.number="subcategory.category_id"
+                    >
+                      <option value="0">Select Category</option>
+                      <option
+                        v-for="category in categories"
+                        :key="category.id"
+                        :value="category.id"
+                      >
+                        {{ category.name }}
+                      </option>
+                    </select>
+                    <div
+                      class="form-control-feedback"
+                      v-if="!$v.subcategory.category_id.required"
+                    >
+                      Field is required
+                    </div>
+                    <div
+                      class="form-control-feedback"
+                      v-else-if="!$v.subcategory.category_id.numeric"
+                    >
+                      Select valid category
+                    </div>
+                    <div
+                      class="form-control-feedback"
+                      v-else-if="!$v.subcategory.category_id.minValue"
+                    >
+                      Select valid category
+                    </div>
+                    <div
+                      class="form-control-feedback"
+                      v-for="(err, index) in errors.category_id"
+                      :key="index"
+                    >
+                      {{ err }}
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="form-group m-form__group row"
+                  :class="{
                     'has-danger': this.errors.status,
                   }"
                 >
@@ -158,13 +210,14 @@
 </template>
 
 <script>
-import { required, minLength } from "vuelidate/lib/validators";
+import { required, minLength, numeric, minValue } from "vuelidate/lib/validators";
 export default {
   name: "AddSubCategory",
   data() {
     return {
       subcategory: {
-        name: "",
+        name: "Vue Sub Category 1",
+        category_id: 11,
         status: "Active",
       },
       errors: [],
@@ -177,11 +230,19 @@ export default {
         required,
         minLength: minLength(3),
       },
+      category_id: {
+        required,
+        numeric,
+        minValue: minValue(1),
+      },
     },
   },
   computed: {
     isEditMode() {
       return this.$route.params.slug != null;
+    },
+    categories() {
+      return this.$store.getters["category/all"];
     },
   },
   methods: {
@@ -211,6 +272,7 @@ export default {
     },
   },
   async created() {
+    this.$store.dispatch("category/get");
     if (this.$route.params.slug) {
       this.isSubmitted = true;
       let slug = this.$route.params.slug;
