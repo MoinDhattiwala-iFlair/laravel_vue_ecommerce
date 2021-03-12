@@ -4,7 +4,7 @@
       <div class="d-flex align-items-center">
         <div class="mr-auto">
           <h3 class="m-subheader__title m-subheader__title--separator">
-            {{ isEditMode ? "Edit" : "Add" }} Sub Category
+            {{ isEditMode ? "Edit" : "Add" }} Product
           </h3>
           <ul class="m-subheader__breadcrumbs m-nav m-nav--inline">
             <li class="m-nav__item m-nav__item--home">
@@ -14,8 +14,8 @@
             </li>
             <li class="m-nav__separator">-</li>
             <li class="m-nav__item">
-              <router-link to="/subcategory" class="m-nav__link">
-                <span class="m-nav__link-text">Sub Category</span>
+              <router-link to="/product" class="m-nav__link">
+                <span class="m-nav__link-text">Product</span>
               </router-link>
             </li>
             <li class="m-nav__separator">-</li>
@@ -29,7 +29,7 @@
         <div>
           <div m-dropdown-toggle="hover" aria-expanded="true" hover="1" timeout="39">
             <router-link
-              to="/subcategory"
+              to="/product"
               class="m-portlet__nav-link btn btn-lg btn-secondary m-btn m-btn--outline-2x m-btn--air m-btn--icon m-btn--icon-only m-btn--pill m-dropdown__toggle"
             >
               <i class="la la-close"></i>
@@ -53,29 +53,28 @@
                 <div
                   class="form-group m-form__group row"
                   :class="{
-                    'has-danger': this.$v.subcategory.name.$invalid || this.errors.name,
+                    'has-danger': this.$v.product.name.$invalid || this.errors.name,
                   }"
                 >
-                  <label for="input-user-name" class="col-2 col-form-label">Name</label>
+                  <label for="input-product-name" class="col-2 col-form-label">
+                    Name
+                  </label>
                   <div class="col-10">
                     <input
                       class="form-control m-input"
                       type="text"
                       id="input-user-name"
-                      v-model.trim="subcategory.name"
+                      v-model.trim="product.name"
                     />
-                    <div
-                      class="form-control-feedback"
-                      v-if="!$v.subcategory.name.required"
-                    >
+                    <div class="form-control-feedback" v-if="!$v.product.name.required">
                       Field is required
                     </div>
                     <div
                       class="form-control-feedback"
-                      v-else-if="!$v.subcategory.name.minLength"
+                      v-else-if="!$v.product.name.minLength"
                     >
                       Name must have at least
-                      {{ $v.subcategory.name.$params.minLength.min }}
+                      {{ $v.product.name.$params.minLength.min }}
                       letters.
                     </div>
                     <div
@@ -91,7 +90,7 @@
                   class="form-group m-form__group row"
                   :class="{
                     'has-danger':
-                      this.$v.subcategory.category_id.$invalid || this.errors.category_id,
+                      this.$v.product.category_id.$invalid || this.errors.category_id,
                   }"
                 >
                   <label for="select-category_id" class="col-2 col-form-label">
@@ -100,8 +99,8 @@
                   <div class="col-10">
                     <select
                       class="form-control m-input"
-                      id="exampleSelect1"
-                      v-model.number="subcategory.category_id"
+                      id="select-category_id"
+                      v-model.number="product.category_id"
                     >
                       <option value="0">Select Category</option>
                       <option
@@ -114,19 +113,19 @@
                     </select>
                     <div
                       class="form-control-feedback"
-                      v-if="!$v.subcategory.category_id.required"
+                      v-if="!$v.product.category_id.required"
                     >
                       Field is required
                     </div>
                     <div
                       class="form-control-feedback"
-                      v-else-if="!$v.subcategory.category_id.numeric"
+                      v-else-if="!$v.product.category_id.numeric"
                     >
                       Select valid category
                     </div>
                     <div
                       class="form-control-feedback"
-                      v-else-if="!$v.subcategory.category_id.minValue"
+                      v-else-if="!$v.product.category_id.minValue"
                     >
                       Select valid category
                     </div>
@@ -142,10 +141,63 @@
                 <div
                   class="form-group m-form__group row"
                   :class="{
+                    'has-danger':
+                      this.$v.product.sub_category_id.$invalid ||
+                      this.errors.sub_category_id,
+                  }"
+                >
+                  <label for="select-sub_category_id" class="col-2 col-form-label">
+                    Sub Category
+                  </label>
+                  <div class="col-10">
+                    <select
+                      class="form-control m-input"
+                      id="select-category_id"
+                      v-model.number="product.sub_category_id"
+                    >
+                      <option value="0">Select Sub Category</option>
+                      <option
+                        v-for="subcategory in subcategories"
+                        :key="subcategory.id"
+                        :value="subcategory.id"
+                      >
+                        {{ subcategory.name }}
+                      </option>
+                    </select>
+                    <div
+                      class="form-control-feedback"
+                      v-if="!$v.product.sub_category_id.required"
+                    >
+                      Field is required
+                    </div>
+                    <div
+                      class="form-control-feedback"
+                      v-else-if="!$v.product.sub_category_id.numeric"
+                    >
+                      Select valid sub category
+                    </div>
+                    <div
+                      class="form-control-feedback"
+                      v-else-if="!$v.product.sub_category_id.minValue"
+                    >
+                      Select valid sub category
+                    </div>
+                    <div
+                      class="form-control-feedback"
+                      v-for="(err, index) in errors.sub_category_id"
+                      :key="index"
+                    >
+                      {{ err }}
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="form-group m-form__group row"
+                  :class="{
                     'has-danger': this.errors.status,
                   }"
                 >
-                  <label for="input-status-name" class="col-2 col-form-label">
+                  <label for="input-product-status" class="col-2 col-form-label">
                     Status
                   </label>
                   <div class="col-10">
@@ -156,11 +208,9 @@
                         <input
                           type="checkbox"
                           name=""
-                          :checked="subcategory.status == 'Active'"
+                          :checked="product.status == 'Active'"
                           @change="
-                            subcategory.status = $event.target.checked
-                              ? 'Active'
-                              : 'Inactive'
+                            product.status = $event.target.checked ? 'Active' : 'Inactive'
                           "
                         />
                         <span></span>
@@ -212,12 +262,13 @@
 <script>
 import { required, minLength, numeric, minValue } from "vuelidate/lib/validators";
 export default {
-  name: "AddSubCategory",
+  name: "AddProduct",
   data() {
     return {
-      subcategory: {
-        name: "",
-        category_id: 0,
+      product: {
+        name: "Product 4 Sub Category 1",
+        category_id: 1,
+        sub_category_id: 1,
         status: "Active",
       },
       errors: [],
@@ -225,12 +276,17 @@ export default {
     };
   },
   validations: {
-    subcategory: {
+    product: {
       name: {
         required,
         minLength: minLength(3),
       },
       category_id: {
+        required,
+        numeric,
+        minValue: minValue(1),
+      },
+      sub_category_id: {
         required,
         numeric,
         minValue: minValue(1),
@@ -244,6 +300,9 @@ export default {
     categories() {
       return this.$store.getters["category/all"];
     },
+    subcategories() {
+      return this.$store.getters["subcategory/all"];
+    },
   },
   methods: {
     async save() {
@@ -252,10 +311,7 @@ export default {
         this.errors = [];
         this.isSubmitted = true;
         this.$store
-          .dispatch(
-            this.isEditMode ? "subcategory/update" : "subcategory/store",
-            this.subcategory
-          )
+          .dispatch(this.isEditMode ? "product/update" : "product/store", this.product)
           .then((result) => {
             this.$toasted.success(result.message);
             this.$router.push("/subcategory");
@@ -273,22 +329,21 @@ export default {
   },
   async created() {
     this.$store.dispatch("category/get");
+    this.$store.dispatch("subcategory/get");
     if (this.$route.params.slug) {
       this.isSubmitted = true;
       let slug = this.$route.params.slug;
       await this.$store
-        .dispatch("subcategory/find", slug)
+        .dispatch("product/find", slug)
         .then((result) => {
           console.log("c result", result);
-          this.subcategory = result;
+          this.product = result;
           this.isSubmitted = false;
         })
         .catch((err) => {
           this.$toasted.error(err.statusText);
           console.log("c err", err);
-          setTimeout(() => {
-            this.$router.push("/subcategory");
-          }, 1000);
+          this.$router.push("/product");
         });
     }
   },

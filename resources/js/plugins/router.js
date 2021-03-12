@@ -8,6 +8,8 @@ import Category from '../vue/Category.vue'
 import AddCategory from '../vue/AddCategory.vue'
 import SubCategory from '../vue/SubCategory.vue'
 import AddSubCategory from '../vue/AddSubCategory.vue'
+import Product from '../vue/Product.vue'
+import AddProduct from '../vue/AddProduct.vue'
 import PageNotFound from '../vue/PageNotFound.vue'
 
 Vue.use(Router)
@@ -69,6 +71,21 @@ export default new Router({
             path: '/subcategory/:slug',
             name: 'AddSubCategory',
             component: AddSubCategory
+        },
+        {
+            path: '/product',
+            name: 'Product',
+            component: Product
+        },
+        {
+            path: '/product/add',
+            name: 'AddProduct',
+            component: AddProduct
+        },
+        {
+            path: '/product/:slug',
+            name: 'AddProduct',
+            component: AddProduct
         },
         {
             path: "*",

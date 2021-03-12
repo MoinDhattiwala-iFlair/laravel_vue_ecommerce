@@ -53,5 +53,15 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers\Api'], func
         Route::delete('subcategory/{subcategory}', 'ApiController@destroySubCategory');
 
         //subcategory route end
+
+        //product route start
+
+        Route::get('product', 'ApiController@getProduct');
+        Route::get('product/{product}', 'ApiController@findProduct');
+        Route::post('product/', 'ApiController@storeProduct');
+        Route::post('product/{product}', 'ApiController@updateProduct');
+        Route::delete('product/{product}', 'ApiController@destroyProduct');
+
+        //product route end
     });
 });

@@ -69,6 +69,16 @@
                   </span>
                 </router-link>
               </li>
+              <li class="m-menu__item" aria-haspopup="true">
+                <router-link to="/product" class="m-menu__link">
+                  <i class="m-menu__link-icon flaticon-list"></i>
+                  <span class="m-menu__link-title">
+                    <span class="m-menu__link-wrap">
+                      <span class="m-menu__link-text">Product</span>
+                    </span>
+                  </span>
+                </router-link>
+              </li>
             </ul>
 
             <div class="ps__rail-x" style="left: 0px; bottom: 0px">

@@ -13,6 +13,10 @@ use Illuminate\Support\Facades\Route;
 |
  */
 
+/* Route::get('/test', function () {
+    
+}); */
+
 Route::any('{query}', function () {
     return view('start');
 })->where('query', '.*');

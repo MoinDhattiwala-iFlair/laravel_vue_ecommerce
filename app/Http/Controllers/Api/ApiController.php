@@ -8,6 +8,7 @@ use App\Models\SubCategory;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
+use App\Models\Product;
 use Illuminate\Support\Facades\Auth;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Validator;
@@ -257,4 +258,13 @@ class ApiController extends Controller
     }
 
     //subcategory end
+
+    //product start
+
+    public function getProduct()
+    {
+        return response()->json(['products' => Product::latest()->get()], 200);
+    }
+
+    //product end
 }
