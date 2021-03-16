@@ -4,7 +4,7 @@
       <div class="d-flex align-items-center">
         <div class="mr-auto">
           <h3 class="m-subheader__title m-subheader__title--separator">
-            {{ isEditMode ? "Edit" : "Add" }} Product
+            {{ isEditMode ? "Edit" : "Add" }} Post
           </h3>
           <ul class="m-subheader__breadcrumbs m-nav m-nav--inline">
             <li class="m-nav__item m-nav__item--home">
@@ -14,8 +14,8 @@
             </li>
             <li class="m-nav__separator">-</li>
             <li class="m-nav__item">
-              <router-link to="/product" class="m-nav__link">
-                <span class="m-nav__link-text">Product</span>
+              <router-link to="/post" class="m-nav__link">
+                <span class="m-nav__link-text">Post</span>
               </router-link>
             </li>
             <li class="m-nav__separator">-</li>
@@ -29,7 +29,7 @@
         <div>
           <div m-dropdown-toggle="hover" aria-expanded="true" hover="1" timeout="39">
             <router-link
-              to="/product"
+              to="/post"
               class="m-portlet__nav-link btn btn-lg btn-secondary m-btn m-btn--outline-2x m-btn--air m-btn--icon m-btn--icon-only m-btn--pill m-dropdown__toggle"
             >
               <i class="la la-close"></i>
@@ -53,33 +53,33 @@
                 <div
                   class="form-group m-form__group row"
                   :class="{
-                    'has-danger': this.$v.product.name.$invalid || this.errors.name,
+                    'has-danger': this.$v.post.title.$invalid || this.errors.title,
                   }"
                 >
-                  <label for="input-product-name" class="col-2 col-form-label">
-                    Name
+                  <label for="input-post-name" class="col-2 col-form-label">
+                    Title
                   </label>
                   <div class="col-10">
                     <input
                       class="form-control m-input"
                       type="text"
-                      id="input-product-name"
-                      v-model.trim="product.name"
+                      id="input-post-name"
+                      v-model.trim="post.title"
                     />
-                    <div class="form-control-feedback" v-if="!$v.product.name.required">
+                    <div class="form-control-feedback" v-if="!$v.post.title.required">
                       Field is required
                     </div>
                     <div
                       class="form-control-feedback"
-                      v-else-if="!$v.product.name.minLength"
+                      v-else-if="!$v.post.title.minLength"
                     >
-                      Name must have at least
-                      {{ $v.product.name.$params.minLength.min }}
+                      Title must have at least
+                      {{ $v.post.title.$params.minLength.min }}
                       letters.
                     </div>
                     <div
                       class="form-control-feedback"
-                      v-for="(err, index) in errors.name"
+                      v-for="(err, index) in errors.title"
                       :key="index"
                     >
                       {{ err }}
@@ -90,90 +90,34 @@
                   class="form-group m-form__group row"
                   :class="{
                     'has-danger':
-                      this.$v.product.sub_category_id.$invalid ||
-                      this.errors.sub_category_id,
+                      this.$v.post.description.$invalid || this.errors.description,
                   }"
                 >
-                  <label for="select-sub_category_id" class="col-2 col-form-label">
-                    Sub Category
+                  <label for="input-post-description" class="col-2 col-form-label">
+                    Description
                   </label>
                   <div class="col-10">
-                    <select
-                      class="form-control m-input"
-                      id="select-category_id"
-                      v-model.number="product.sub_category_id"
-                    >
-                      <option value="0">Select Sub Category</option>
-                      <optgroup
-                        v-for="category in categories"
-                        :key="category.id"
-                        :label="category.name"
-                      >
-                        <option
-                          v-for="subcategory in category.subcategory"
-                          :key="subcategory.id"
-                          :value="subcategory.id"
-                        >
-                          {{ subcategory.name }}
-                        </option>
-                      </optgroup>
-                    </select>
-
+                    <vue-editor
+                      id="input-post-description"
+                      v-model.trim="post.description"
+                    ></vue-editor>
                     <div
                       class="form-control-feedback"
-                      v-if="!$v.product.sub_category_id.required"
+                      v-if="!$v.post.description.required"
                     >
                       Field is required
                     </div>
                     <div
                       class="form-control-feedback"
-                      v-else-if="!$v.product.sub_category_id.numeric"
+                      v-else-if="!$v.post.description.minLength"
                     >
-                      Select valid sub category
+                      Title must have at least
+                      {{ $v.post.description.$params.minLength.min }}
+                      letters.
                     </div>
                     <div
                       class="form-control-feedback"
-                      v-else-if="!$v.product.sub_category_id.minValue"
-                    >
-                      Select valid sub category
-                    </div>
-                    <div
-                      class="form-control-feedback"
-                      v-for="(err, index) in errors.sub_category_id"
-                      :key="index"
-                    >
-                      {{ err }}
-                    </div>
-                  </div>
-                </div>
-                <div
-                  class="form-group m-form__group row"
-                  :class="{
-                    'has-danger': this.errors.status,
-                  }"
-                >
-                  <label for="input-product-status" class="col-2 col-form-label">
-                    Status
-                  </label>
-                  <div class="col-10">
-                    <span
-                      class="m-switch m-switch--outline m-switch--icon m-switch--success"
-                    >
-                      <label>
-                        <input
-                          type="checkbox"
-                          name=""
-                          :checked="product.status == 'Active'"
-                          @change="
-                            product.status = $event.target.checked ? 'Active' : 'Inactive'
-                          "
-                        />
-                        <span></span>
-                      </label>
-                    </span>
-                    <div
-                      class="form-control-feedback"
-                      v-for="(err, index) in errors.status"
+                      v-for="(err, index) in errors.description"
                       :key="index"
                     >
                       {{ err }}
@@ -186,19 +130,17 @@
                     'has-danger': this.errors.photo,
                   }"
                 >
-                  <label for="input-product-photo" class="col-2 col-form-label"
-                    >Photo</label
-                  >
+                  <label for="input-post-photo" class="col-2 col-form-label">Photo</label>
                   <div class="col-7">
                     <div class="custom-file">
                       <input
                         type="file"
                         class="custom-file-input"
-                        id="input-product-photo"
-                        @change="product.photo = $event.target.files[0]"
+                        id="input-post-photo"
+                        @change="post.photo = $event.target.files[0]"
                         accept="image/*"
                       />
-                      <label class="custom-file-label" for="input-product-photo"
+                      <label class="custom-file-label" for="input-post-photo"
                         >Choose photo</label
                       >
                     </div>
@@ -211,7 +153,7 @@
                     </div>
                   </div>
                   <div class="col-3">
-                    <img :src="product.photo_url" />
+                    <img :src="post.photo_url" class="w-100" />
                   </div>
                 </div>
               </div>
@@ -229,7 +171,7 @@
                         Submit
                       </button>
                       <router-link
-                        to="/product"
+                        to="/post"
                         class="btn btn-secondary"
                         :disabled="isSubmitted"
                       >
@@ -249,40 +191,37 @@
 </template>
 
 <script>
-import { required, minLength, numeric, minValue } from "vuelidate/lib/validators";
+import { VueEditor } from "vue2-editor";
+import { required, minLength } from "vuelidate/lib/validators";
 export default {
-  name: "AddProduct",
+  name: "AddPost",
+  components: { VueEditor },
   data() {
     return {
-      product: {
-        name: "",
-        sub_category_id: "",
+      post: {
+        title: "",
+        description: "",
         photo: "",
-        status: "Active",
       },
       errors: [],
       isSubmitted: false,
     };
   },
   validations: {
-    product: {
-      name: {
+    post: {
+      title: {
         required,
         minLength: minLength(3),
       },
-      sub_category_id: {
+      description: {
         required,
-        numeric,
-        minValue: minValue(1),
+        minLength: minLength(10),
       },
     },
   },
   computed: {
     isEditMode() {
       return this.$route.params.slug != null;
-    },
-    categories() {
-      return this.$store.getters["helper/allCategoriesWithSubCategory"];
     },
   },
   methods: {
@@ -292,19 +231,19 @@ export default {
         this.errors = [];
         this.isSubmitted = true;
         let formData = new FormData();
-        Object.keys(this.product).forEach((key) => {
-          if (this.product[key] != null && this.product[key] != "") {
-            formData.append(key, this.product[key]);
+        Object.keys(this.post).forEach((key) => {
+          if (this.post[key] != null && this.post[key] != "") {
+            formData.append(key, this.post[key]);
           }
         });
         this.$store
-          .dispatch(this.isEditMode ? "product/update" : "product/store", {
+          .dispatch(this.isEditMode ? "post/update" : "post/store", {
             formData: formData,
-            slug: this.product.slug,
+            slug: this.post.slug,
           })
           .then((result) => {
             this.$toasted.success(result.message);
-            this.$router.push("/product");
+            this.$router.push("/post");
           })
           .catch((err) => {
             this.isSubmitted = false;
@@ -318,22 +257,21 @@ export default {
     },
   },
   async created() {
-    this.$store.dispatch("helper/getCategoriesWithSubCategory");
     if (this.$route.params.slug) {
       this.isSubmitted = true;
       let slug = this.$route.params.slug;
       await this.$store
-        .dispatch("product/find", slug)
+        .dispatch("post/find", slug)
         .then((result) => {
           console.log("c result", result);
-          this.product = result;
-          this.product.photo = "";
+          this.post = result;
+          this.post.photo = "";
           this.isSubmitted = false;
         })
         .catch((err) => {
           this.$toasted.error(err.statusText);
           console.log("c err", err);
-          this.$router.push("/product");
+          this.$router.push("/post");
         });
     }
   },

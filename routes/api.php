@@ -62,6 +62,27 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers\Api'], func
         Route::post('product/{product}', 'ApiController@updateProduct');
         Route::delete('product/{product}', 'ApiController@destroyProduct');
 
-        //product route end
+        //product route end            
+
+
+        //post route start
+
+        Route::get('post', 'ApiController@getPost');
+        Route::get('post/{post}', 'ApiController@findPost');
+        Route::get('post_detail/{post}', 'ApiController@postDetail');
+        Route::post('post/', 'ApiController@storePost');
+        Route::post('post/{post}', 'ApiController@updatePost');
+        Route::delete('post/{post}', 'ApiController@destroyPost');
+
+        //post route end  
+
+
+        //Helper route start
+
+        Route::post('/globalaction', 'HelperController@index');
+
+        //Helper route end
+
+
     });
 });

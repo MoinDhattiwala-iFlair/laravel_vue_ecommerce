@@ -5,6 +5,8 @@ import users from './modules/users'
 import category from './modules/category'
 import subcategory from './modules/subcategory'
 import product from './modules/product'
+import post from './modules/post'
+import helper from './modules/helper'
 
 Vue.use(Vuex);
 
@@ -14,6 +16,8 @@ export default new Vuex.Store({
         users,
         category,
         subcategory,
-        product
+        product,
+        post,
+        helper,
     },
 });

@@ -44,6 +44,7 @@
                     <thead>
                       <tr class="text-center">
                         <th>#</th>
+                        <th>Photo</th>
                         <th>Name</th>
                         <th>Slug</th>
                         <th>Sub Category</th>
@@ -55,6 +56,7 @@
                     <tbody>
                       <tr v-for="(product, index) in products" :key="product.slug">
                         <th class="text-center" scope="row">{{ index + 1 }}</th>
+                        <td class="text-center"><img :src="product.photo_url" /></td>
                         <td>{{ product.name }}</td>
                         <td>{{ product.slug }}</td>
                         <td>{{ product.sub_category_name }}</td>

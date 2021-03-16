@@ -1,17 +1,17 @@
 import axios from '../../plugins/axios'
 const state = {
-    products: {}
+    posts: {}
 };
 const getters = {
     all(state, getters) {
-        return state.products;
+        return state.posts;
     },
 };
 const actions = {
     get(context) {
         return new Promise((resolve, reject) => {
-            axios.get('/product').then((result) => {
-                context.commit('set', result.data.products);
+            axios.get('/post').then((result) => {
+                context.commit('set', result.data.posts);
                 resolve();
             }).catch((err) => {
                 reject(err.response);
@@ -20,35 +20,44 @@ const actions = {
     },
     find(context, slug) {
         return new Promise((resolve, reject) => {
-            axios.get('/product/' + slug).then((result) => {                
-                resolve(result.data.product);
+            axios.get('/post/' + slug).then((result) => {                
+                resolve(result.data.post);
             }).catch((err) => {
                 reject(err.response);
             });
         });
     },
-    store(context, product) {
+    postDetail(context, slug) {
         return new Promise((resolve, reject) => {
-            axios.post('/product', product.formData).then((result) => {
+            axios.get('/post_detail/' + slug).then((result) => {
+                resolve(result.data.post);
+            }).catch((err) => {
+                reject(err.response);
+            });
+        });
+    },
+    store(context, post) {
+        return new Promise((resolve, reject) => {
+            axios.post('/post', post.formData).then((result) => {
                 resolve(result.data);
             }).catch((err) => {
                 reject(err.response);
             });
         });
     },
-    update(context, product) {
+    update(context, post) {
         return new Promise((resolve, reject) => {
-            axios.post('/product/' + product.slug, product.formData).then((result) => {
+            axios.post('/post/' + post.slug, post.formData).then((result) => {
                 resolve(result.data);
             }).catch((err) => {
                 reject(err.response);
             });
         });
     },
-    delete(context, product) {
+    delete(context, post) {
         return new Promise((resolve, reject) => {
-            axios.delete('/product/' + product.slug).then((result) => {
-                context.commit('remove', product.index);
+            axios.delete('/post/' + post.slug).then((result) => {
+                context.commit('remove', post.index);
                 resolve(result.data);
             }).catch((err) => {
                 reject(err.response);
@@ -57,11 +66,11 @@ const actions = {
     },
 };
 const mutations = {
-    set(state, products) {
-        state.products = products;
+    set(state, posts) {
+        state.posts = posts;
     },
     remove(state, index) {
-        state.products.splice(index, 1);
+        state.posts.splice(index, 1);
     }
 };
 

@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\Post;
 use App\Models\User;
+use App\Models\Product;
 use App\Models\Category;
 use App\Models\SubCategory;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
-use App\Models\Product;
 use Illuminate\Support\Facades\Auth;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Validator;
@@ -123,6 +124,8 @@ class ApiController extends Controller
         $destinationPath =  public_path($destination);
         if (!file_exists($destinationPath)) {
             @mkdir($destinationPath, 0777, true);
+        } else {
+            @chmod($destinationPath, 0777);
         }
 
         if (!is_null($old_photo) && file_exists($old_photo)) {
@@ -185,7 +188,7 @@ class ApiController extends Controller
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors(), 'message' => 'Please enter valid inputs'], 422);
-        }        
+        }
         if ($category->update($validator->validated())) {
             return response()->json(['message' => 'Category updated successfully.'], 200);
         }
@@ -266,5 +269,141 @@ class ApiController extends Controller
         return response()->json(['products' => Product::latest()->get()], 200);
     }
 
+    public function findProduct(Product $product)
+    {
+        return response()->json(['product' => $product], 200);
+    }
+
+    public function storeProduct(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|min:3|unique:products',
+            'sub_category_id' => 'required|numeric|exists:sub_categories,id',
+            'status' => ['required', Rule::in(['Active', 'Inactive'])],
+            'photo' => 'nullable|image|mimes:jpg,jpeg,png|max:1024'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors(), 'message' => 'Please enter valid inputs'], 422);
+        }
+        $inputs = $validator->validated();
+        if (isset($inputs['photo']) && !empty($inputs['photo'])) {
+            $inputs['photo'] = $this->uploadImage('images/products', $inputs['photo'], [150, 150]);
+        }
+        if (Product::create($inputs)) {
+            return response()->json(['message' => 'Product saved successfully.'], 200);
+        }
+        return response()->json(['message' => 'Failed to save product please try again.'], 500);
+    }
+
+    public function updateProduct(Request $request, Product $product)
+    {
+
+        $validator = Validator::make($request->all(), [
+            'sub_category_id' => 'required|numeric|exists:sub_categories,id',
+            'name' => 'required|string|min:3|unique:products,name,' . $product->id,
+            'status' => ['required', Rule::in(['Active', 'Inactive'])],
+            'photo' => 'nullable|image|mimes:jpg,jpeg,png|max:1024'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors(), 'message' => 'Please enter valid inputs'], 422);
+        }
+        $inputs = $validator->validated();
+        if (isset($inputs['photo']) && !empty($inputs['photo'])) {
+            $inputs['photo'] = $this->uploadImage('images/products', $inputs['photo'], [150, 150], $product->photo);
+        }
+        if ($product->update($inputs)) {
+            return response()->json(['message' => 'Product updated successfully.'], 200);
+        }
+        return response()->json(['message' => 'Failed to product sub category please try again.'], 500);
+    }
+
+    public function destroyProduct(Product $product)
+    {
+        if ($product->delete()) {
+            return response()->json(['message' => 'Product deleted successfully.'], 200);
+        }
+        return response()->json(['message' => 'Failed to delete product please try again.'], 500);
+    }
+
     //product end
+
+
+    //post start
+
+    public function getPost()
+    {
+        return response()->json(['posts' => Post::with(['user', 'comments'])->latest()->get()], 200);
+    }
+
+    public function findPost(Post $post)
+    {
+        return response()->json(['post' => $post], 200);
+    }
+
+    public function postDetail(Post $post)
+    {
+        return response()->json([
+            'post' => $post->load([
+                'user', 
+                'comments' => function ($comment) {
+                    $comment->with('user');
+                }]
+            )]
+        , 200);
+    }
+
+    public function storePost(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'title' => 'required|string|min:3|unique:posts',
+            'description' => 'required|string|min:10',
+            'photo' => 'nullable|image|mimes:jpg,jpeg,png|max:1024'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors(), 'message' => 'Please enter valid inputs'], 422);
+        }
+        $inputs = $validator->validated();
+        if (isset($inputs['photo']) && !empty($inputs['photo'])) {
+            $inputs['photo'] = $this->uploadImage('images/posts', $inputs['photo'], []);
+        }
+        if ($request->user()->posts()->create($inputs)) {
+            return response()->json(['message' => 'Post saved successfully.'], 200);
+        }
+        return response()->json(['message' => 'Failed to save post please try again.'], 500);
+    }
+
+    public function updatePost(Request $request, Post $post)
+    {
+
+        $validator = Validator::make($request->all(), [
+            'title' => 'required|string|min:3|unique:posts,title,' . $post->id,
+            'description' => 'required|string|min:10',
+            'photo' => 'nullable|image|mimes:jpg,jpeg,png|max:1024'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors(), 'message' => 'Please enter valid inputs'], 422);
+        }
+        $inputs = $validator->validated();
+        if (isset($inputs['photo']) && !empty($inputs['photo'])) {
+            $inputs['photo'] = $this->uploadImage('images/posts', $inputs['photo'], [], $post->photo);
+        }
+        if ($post->update($inputs)) {
+            return response()->json(['message' => 'Post updated successfully.'], 200);
+        }
+        return response()->json(['message' => 'Failed to post sub category please try again.'], 500);
+    }
+
+    public function destroyPost(Post $post)
+    {
+        if ($post->delete()) {
+            return response()->json(['message' => 'Post deleted successfully.'], 200);
+        }
+        return response()->json(['message' => 'Failed to delete post please try again.'], 500);
+    }
+
+    //post end
 }

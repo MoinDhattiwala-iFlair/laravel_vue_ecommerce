@@ -17,7 +17,7 @@ class Product extends Model
 
     protected $fillable = ['sub_category_id', 'name', 'photo', 'description', 'status'];
 
-    protected $appends = ['sub_category_name','category_id', 'category_name'];
+    protected $appends = ['sub_category_name','category_id', 'category_name', 'photo_url'];
 
     public static function boot()
     {
@@ -72,9 +72,9 @@ class Product extends Model
         return $this->subcategory->name;
     }
 
-    public function getPhotoAttribute()
+    public function getPhotoUrlAttribute()
     {
         return asset($this->photo ?? 'images/products/noimage.png');
-    }
+    }    
     
 }
