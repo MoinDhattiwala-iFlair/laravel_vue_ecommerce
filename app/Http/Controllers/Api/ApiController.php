@@ -10,6 +10,7 @@ use App\Models\SubCategory;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
+use App\Models\Comment;
 use Illuminate\Support\Facades\Auth;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Validator;
@@ -344,14 +345,12 @@ class ApiController extends Controller
 
     public function postDetail(Post $post)
     {
-        return response()->json([
-            'post' => $post->load([
-                'user', 
-                'comments' => function ($comment) {
-                    $comment->with('user');
-                }]
-            )]
-        , 200);
+        return response()->json(
+            [
+                'post' => $post->load(['user', 'comments.user'])
+            ],
+            200
+        );
     }
 
     public function storePost(Request $request)
@@ -403,6 +402,46 @@ class ApiController extends Controller
             return response()->json(['message' => 'Post deleted successfully.'], 200);
         }
         return response()->json(['message' => 'Failed to delete post please try again.'], 500);
+    }
+
+    public function storePostComment(Request $request, Post $post)
+    {        
+        $validator = Validator::make($request->all(), [
+            'comment' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors(), 'message' => 'Please enter valid inputs'], 422);
+        }
+        $inputs = $validator->validated();
+        $inputs['user_id'] = $request->user()->id;
+        if ($comment = $post->comments()->create($inputs)) {
+            return response()->json(['message' => 'Comment added successfully.', 'comment' => $comment->load('user')], 200);   
+        }
+        return response()->json(['message' => 'Failed to save comment please try again.'], 500);
+    }
+
+    public function updatePostComment(Request $request, Comment $comment)
+    {
+        $validator = Validator::make($request->all(), [
+            'comment' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors(), 'message' => 'Please enter valid inputs'], 422);
+        }        
+        if ($comment->update($validator->validated())) {
+            return response()->json(['message' => 'Comment updated successfully.', 'comment' => $comment->comment], 200);
+        }
+        return response()->json(['message' => 'Failed to update comment please try again.'], 500);
+    }
+
+    public function destroyPostComment(Comment $comment)
+    {
+        if ($comment->delete()) {
+            return response()->json(['message' => 'Comment deleted successfully.'], 200);
+        }
+        return response()->json(['message' => 'Failed to delete comment please try again.'], 500);
     }
 
     //post end

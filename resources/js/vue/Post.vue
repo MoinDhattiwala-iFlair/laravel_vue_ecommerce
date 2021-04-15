@@ -33,75 +33,76 @@
     <div class="m-content">
       <div class="row">
         <div class="col-xl-6" v-for="(post, index) in posts" :key="post.slug">
-          <!--begin:: Widgets/Blog-->
-          <div
-            class="m-portlet m-portlet--bordered-semi m-portlet--full-height m-portlet--rounded-force"
-          >
-            <div class="m-portlet__head m-portlet__head--fit">
-              <div class="m-portlet__head-caption">
-                <div class="m-portlet__head-action">
-                  <button type="button" class="btn btn-sm m-btn--pill btn-brand">
-                    Blog
-                  </button>
-                </div>
-              </div>
-            </div>
-            <div class="m-portlet__body">
-              <div class="m-widget19">
-                <div
-                  class="m-widget19__pic m-portlet-fit--top m-portlet-fit--sides"
-                  style="min-height-: 286px"
-                >
-                  <img :src="post.photo_url" alt="" class="w-100" />
-                  <h3 class="m-widget19__title m--font-light">{{ post.title }}</h3>
-                  <div class="m-widget19__shadow"></div>
-                </div>
-                <div class="m-widget19__content">
-                  <div class="m-widget19__header">
-                    <div class="m-widget19__user-img">
-                      <img class="m-widget19__img" :src="post.user.avatar" alt="" />
-                    </div>
-                    <div class="m-widget19__info">
-                      <span class="m-widget19__username"> {{ post.user.name }} </span
-                      ><br />
-                      <span class="m-widget19__time"> {{ post.posted_at }} </span>
-                    </div>
-                    <div class="m-widget19__stats">
-                      <span class="m-widget19__number m--font-brand">
-                        {{ post.comments.length }}
-                      </span>
-                      <span class="m-widget19__comment"> Comments </span>
-                    </div>
+          <router-link :to="'/post/' + post.slug">
+            <!--begin:: Widgets/Blog-->
+            <div
+              class="m-portlet m-portlet--bordered-semi m-portlet--full-height m-portlet--rounded-force"
+            >
+              <div class="m-portlet__head m-portlet__head--fit">
+                <div class="m-portlet__head-caption">
+                  <div class="m-portlet__head-action">
+                    <button type="button" class="btn btn-sm m-btn--pill btn-brand">
+                      Blog
+                    </button>
                   </div>
                 </div>
-                <div class="m-widget19__action">
-                  <router-link
-                    :to="'/post/' + post.slug"
-                    type="button"
-                    class="btn m-btn--pill btn-secondary m-btn m-btn--hover-brand m-btn--custom"
+              </div>
+              <div class="m-portlet__body">
+                <div class="m-widget19">
+                  <div
+                    class="m-widget19__pic m-portlet-fit--top m-portlet-fit--sides"
+                    style="min-height-: 286px"
                   >
-                    Read More
-                  </router-link>
-                  <span class="text-right" v-show="authUser.id == post.user.id">
+                    <img :src="post.photo_url" alt="" class="w-100" />
+                    <h3 class="m-widget19__title m--font-light">{{ post.title }}</h3>
+                    <div class="m-widget19__shadow"></div>
+                  </div>
+                  <div class="m-widget19__content">
+                    <div class="m-widget19__header">
+                      <div class="m-widget19__user-img">
+                        <img class="m-widget19__img" :src="post.user.avatar" alt="" />
+                      </div>
+                      <div class="m-widget19__info">
+                        <span class="m-widget19__username"> {{ post.user.name }} </span
+                        ><br />
+                        <span class="m-widget19__time"> {{ post.posted_at }} </span>
+                      </div>
+                      <div class="m-widget19__stats">
+                        <span class="m-widget19__number m--font-brand">
+                          {{ post.comments.length }}
+                        </span>
+                        <span class="m-widget19__comment"> Comments </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="m-widget19__action">
                     <router-link
-                      :to="'/post/edit/' + post.slug"
-                      class="btn m-btn--pill btn-outline-warning m-btn m-btn--custom m-btn--icon m-btn--icon-only"
+                      :to="'/post/' + post.slug"
+                      type="button"
+                      class="btn m-btn--pill btn-secondary m-btn m-btn--hover-brand m-btn--custom"
                     >
-                      <i class="la la-pencil"></i>
+                      Read More
                     </router-link>
-                    <button
-                      class="btn m-btn--pill btn-outline-danger m-btn m-btn--custom m-btn--icon m-btn--icon-only"
-                      @click="deletePost(index)"
-                    >
-                      <i class="la la-trash"></i>
-                    </button>
-                  </span>
+                    <span class="text-right" v-show="authUser.id == post.user.id">
+                      <router-link
+                        :to="'/post/edit/' + post.slug"
+                        class="btn m-btn--pill btn-outline-warning m-btn m-btn--custom m-btn--icon m-btn--icon-only"
+                      >
+                        <i class="la la-pencil"></i>
+                      </router-link>
+                      <button
+                        class="btn m-btn--pill btn-outline-danger m-btn m-btn--custom m-btn--icon m-btn--icon-only"
+                        @click="deletePost(index)"
+                      >
+                        <i class="la la-trash"></i>
+                      </button>
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-
-          <!--end:: Widgets/Blog-->
+            <!--end:: Widgets/Blog-->
+          </router-link>
         </div>
       </div>
     </div>

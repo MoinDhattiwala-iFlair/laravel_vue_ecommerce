@@ -73,8 +73,11 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers\Api'], func
         Route::post('post/', 'ApiController@storePost');
         Route::post('post/{post}', 'ApiController@updatePost');
         Route::delete('post/{post}', 'ApiController@destroyPost');
+        Route::post('post/{post}/comment', 'ApiController@storePostComment');
+        Route::post('comment/{comment}', 'ApiController@updatePostComment');
+        Route::delete('comment/{comment}', 'ApiController@destroyPostComment');
 
-        //post route end  
+        //post route end         
 
 
         //Helper route start

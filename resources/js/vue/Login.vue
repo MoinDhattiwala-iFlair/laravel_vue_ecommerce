@@ -119,7 +119,8 @@ export default {
           .then((result) => {
             this.$toasted.success("Welcome " + result.data.user.name).goAway(1000);
             setTimeout(() => {
-              this.$router.push("/dashboard");
+              //this.$router.push("/dashboard");
+              window.location.href = "/dashboard";
             }, 1000);
           })
           .catch((err) => {

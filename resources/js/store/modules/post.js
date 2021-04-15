@@ -15,12 +15,12 @@ const actions = {
                 resolve();
             }).catch((err) => {
                 reject(err.response);
-            });           
+            });
         });
     },
     find(context, slug) {
         return new Promise((resolve, reject) => {
-            axios.get('/post/' + slug).then((result) => {                
+            axios.get('/post/' + slug).then((result) => {
                 resolve(result.data.post);
             }).catch((err) => {
                 reject(err.response);
